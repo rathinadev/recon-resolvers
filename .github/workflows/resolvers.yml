@@ -1,0 +1,40 @@
+name: validate-resolvers
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 min (best-effort; GitHub may delay under load)
+  workflow_dispatch: {}        # manual "Run workflow" button
+  push:
+    branches: [main]
+    paths: [validate.py, requirements.txt, .github/workflows/resolvers.yml]
+
+permissions:
+  contents: write              # let the built-in GITHUB_TOKEN commit resolvers.txt
+
+concurrency:
+  group: validate-resolvers
+  cancel-in-progress: true     # never let two validation runs overlap
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Validate resolvers
+        run: python validate.py
+      - name: Commit refreshed list (as bot)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resolvers.txt
+          if git diff --cached --quiet; then
+            echo "no change in resolvers.txt — nothing to commit"
+          else
+            git commit -m "chore: refresh validated resolvers ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
