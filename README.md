@@ -4,8 +4,9 @@ A continuously-validated list of public **DNS resolvers** — the ones that answ
 **fast** and **behave correctly** (dead, poisoned, and hijacking/ad-injecting
 servers removed).
 
-[`resolvers.txt`](resolvers.txt) is regenerated **every 30 minutes** by GitHub
-Actions and committed automatically, so it stays fresh. Point your mass-DNS tooling
+[`resolvers.txt`](resolvers.txt) is regenerated on an **hourly** CI schedule and
+committed automatically — in practice every few hours, since GitHub Actions scheduling
+is best-effort (which is plenty; resolvers don't go stale that fast). Point your mass-DNS tooling
 (`puredns`, `shuffledns`, `massdns`, `dnsx`, …) at the raw file:
 
 ```
