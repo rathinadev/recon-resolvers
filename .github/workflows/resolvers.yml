@@ -2,7 +2,7 @@ name: validate-resolvers
 
 on:
   schedule:
-    - cron: "17 * * * *"     # hourly (GitHub Actions scheduling is best-effort — in practice ~every few hours)
+    - cron: "19 * * * *"     # hourly (GitHub Actions scheduling is best-effort — in practice ~every few hours)
   workflow_dispatch: {}        # manual "Run workflow" button
   push:
     branches: [main]
